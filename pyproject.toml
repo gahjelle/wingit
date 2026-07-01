@@ -1,0 +1,16 @@
+[build-system]
+requires = ["uv_build>=0.11.8,<0.12.0"]
+build-backend = "uv_build"
+
+[project]
+name = "wingit"
+version = "0.1.0"
+description = "Run your agent harness in headless mode"
+readme = "README.md"
+authors = [{ name = "Geir Arne Hjelle", email = "geirarne@gmail.com" }]
+requires-python = ">=3.14"
+dependencies = ["cyclopts>=4.20.0", "rich>=15.0.0"]
+
+[project.scripts]
+a = "wingit:main"
+wingit = "wingit:main"

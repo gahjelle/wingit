@@ -19,10 +19,14 @@ Single-context repo:
 /
 ├── CONTEXT.md
 ├── docs/adr/
-│   ├── 0001-example-decision.md
-│   └── 0002-another-decision.md
+│   ├── 0001-drive-harnesses-headless-not-model-apis.md
+│   └── 0002-sessions-build-on-native-harness-sessions.md
 └── src/
 ```
+
+## ADR numbering
+
+ADR files are numbered sequentially from `0001` with no gaps or duplicates. `repolint` enforces this (WNG010 rejects duplicate prefixes, WNG011 rejects gaps). When adding one, scan `docs/adr/` for the highest number and increment. Parallel branches that each add "the next" ADR will collide on a number — renumber before merge so the sequence stays gapless.
 
 ## Use the glossary's vocabulary
 
@@ -34,4 +38,4 @@ If the concept you need isn't in the glossary yet, that's a signal — either yo
 
 If your output contradicts an existing ADR, surface it explicitly rather than silently overriding:
 
-> _Contradicts ADR-0007 (event-sourced orders) — but worth reopening because…_
+> _Contradicts ADR-0002 (sessions build on native harness sessions) — but worth reopening because…_

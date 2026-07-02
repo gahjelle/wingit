@@ -9,8 +9,55 @@ description = "Run your agent harness in headless mode"
 readme = "README.md"
 authors = [{ name = "Geir Arne Hjelle", email = "geirarne@gmail.com" }]
 requires-python = ">=3.14"
-dependencies = ["cyclopts>=4.20.0", "rich>=15.0.0"]
+dependencies = [
+    "configaroo>=0.6.1",
+    "cyclopts>=4.20.0",
+    "pydantic>=2.13.4",
+    "rich>=15.0.0",
+]
 
 [project.scripts]
 a = "wingit:main"
 wingit = "wingit:main"
+
+[dependency-groups]
+dev = [
+    "ipython>=9.15.0",
+    "prek>=0.4.6",
+    "pytest>=9.1.1",
+    "ruff>=0.15.20",
+    "ty>=0.0.56",
+]
+
+[tool.ruff]
+line-length = 88
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+# COM812/D203/D213 conflict with the formatter or each other; PLR0913 is
+# superseded by WNG009 (repolint), which counts positional args only.
+ignore = ["COM812", "D203", "D213", "PLR0913"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "PLR2004", "SLF001", "INP001"]
+
+[tool.ruff.lint.flake8-type-checking]
+# Pydantic resolves annotations at runtime (model schema building), so imports
+# used only in model annotations must stay at runtime, not move to TYPE_CHECKING.
+runtime-evaluated-base-classes = [
+    "pydantic.BaseModel",
+    "wingit.schemas.FrozenModel",
+    "wingit.schemas.StrictModel",
+]
+runtime-evaluated-decorators = ["pydantic.field_validator"]
+# cyclopts resolves command annotations at runtime (get_type_hints), so the
+# `wingit.cli` parameter-type aliases must stay at runtime too. repolint's
+# WNG008 reads this list and flags any of these left under TYPE_CHECKING.
+exempt-modules = ["pathlib", "datetime", "typing", "wingit.cli"]
+
+[tool.ty.src]
+include = ["src", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

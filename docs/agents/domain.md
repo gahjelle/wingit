@@ -26,7 +26,7 @@ Single-context repo:
 
 ## ADR numbering
 
-ADR files are numbered sequentially from `0001` with no gaps or duplicates. `repolint` enforces this (WNG010 rejects duplicate prefixes, WNG011 rejects gaps). When adding one, scan `docs/adr/` for the highest number and increment. Parallel branches that each add "the next" ADR will collide on a number — renumber before merge so the sequence stays gapless.
+ADR files are numbered sequentially from `0001` with no gaps or duplicates. `garuff` enforces this (GAA001 rejects duplicate prefixes, GAA002 rejects gaps). When adding one, scan `docs/adr/` for the highest number and increment. Parallel branches that each add "the next" ADR will collide on a number — renumber before merge so the sequence stays gapless.
 
 ## Use the glossary's vocabulary
 

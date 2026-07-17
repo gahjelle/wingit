@@ -22,6 +22,7 @@ wingit = "wingit:main"
 
 [dependency-groups]
 dev = [
+    "garuff>=2026.7.0",
     "ipython>=9.15.0",
     "prek>=0.4.6",
     "pytest>=9.1.1",
@@ -36,7 +37,7 @@ src = ["src"]
 [tool.ruff.lint]
 select = ["ALL"]
 # COM812/D203/D213 conflict with the formatter or each other; PLR0913 is
-# superseded by WNG009 (repolint), which counts positional args only.
+# superseded by GAC008 (garuff), which counts positional args only.
 ignore = ["COM812", "D203", "D213", "PLR0913"]
 
 [tool.ruff.lint.per-file-ignores]
@@ -52,8 +53,15 @@ runtime-evaluated-base-classes = [
 ]
 runtime-evaluated-decorators = ["pydantic.field_validator"]
 # cyclopts resolves command annotations at runtime (get_type_hints), so the
-# `wingit.cli` parameter-type aliases must stay at runtime too. repolint's
-# WNG008 reads this list and flags any of these left under TYPE_CHECKING.
+# `wingit.cli` parameter-type aliases must stay at runtime too. garuff's GAC007
+# flags any of these left under TYPE_CHECKING; its exempt list is configured
+# separately under [tool.garuff.rules.GAC007] and must be kept in sync with this.
+exempt-modules = ["pathlib", "datetime", "typing", "wingit.cli"]
+
+[tool.garuff.rules.GAC007]
+# GAC007 keeps ruff-exempt modules at runtime. garuff has its own exempt list
+# (it does not read ruff's), so mirror the modules in
+# [tool.ruff.lint.flake8-type-checking].exempt-modules above.
 exempt-modules = ["pathlib", "datetime", "typing", "wingit.cli"]
 
 [tool.ty.src]

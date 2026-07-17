@@ -4,7 +4,7 @@
 
 1. `just fmt-check` — `uv run ruff format --check`
 2. `just lint` — `uv run ruff check`
-3. `just conventions` — `uv run python -m tools.repolint` (repo-specific `WNG` rules ruff/ty can't express; see [code-conventions.md](./code-conventions.md#repo-conventions-repolint))
+3. `just conventions` — `uv run garuff check` (repo-specific `GA` rules ruff/ty can't express; see [code-conventions.md](./code-conventions.md#repo-conventions-garuff))
 4. `just typecheck` — `uv run ty check` (covers `src/` and `tests/`)
 5. `just test` — `uv run pytest -q`
 
@@ -13,8 +13,8 @@ A slice is not done until `just check` is green. CI mirrors these exact commands
 ## Quick fixes
 
 - Auto-format: `just fmt`
-- Lint fix: `just fix` (runs `ruff check --fix`, then `repolint --fix`, then `ruff format`)
-- Convention fix: `uv run python -m tools.repolint --fix` (safe textual fixes for WNG001 and WNG004 only)
+- Lint fix: `just fix` (runs `ruff check --fix`, then `garuff check --fix`, then `ruff format`)
+- Convention fix: `uv run garuff check --fix` (applies garuff's available fixers, then reports what remains)
 
 ## Pre-commit hooks
 

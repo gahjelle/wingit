@@ -94,6 +94,15 @@ wheels = [
 ]
 
 [[package]]
+name = "garuff"
+version = "2026.7.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/23/c1/1ed64967c3d3b81bb6671afd5ec4f7b13a457723a6df0d3159acd4c1b793/garuff-2026.7.0.tar.gz", hash = "sha256:9e7639ee24a834c9ff131bc393239e126350891c2b6503cf77d988abec9104f7", size = 32107, upload-time = "2026-07-17T19:17:12.085Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c4/92/7d7b702f0c5a50d08c7ed2b773c8396e3f55f060d25ba8adc8a62a21fa4b/garuff-2026.7.0-py3-none-any.whl", hash = "sha256:188efb978875b2f6df1b55341d8ecf10138409daa4d73435e4592f2e3380de17", size = 46522, upload-time = "2026-07-17T19:17:10.789Z" },
+]
+
+[[package]]
 name = "iniconfig"
 version = "2.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -528,6 +537,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "garuff" },
     { name = "ipython" },
     { name = "prek" },
     { name = "pytest" },
@@ -545,6 +555,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "garuff", specifier = ">=2026.7.0" },
     { name = "ipython", specifier = ">=9.15.0" },
     { name = "prek", specifier = ">=0.4.6" },
     { name = "pytest", specifier = ">=9.1.1" },

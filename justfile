@@ -21,7 +21,7 @@ typecheck:
 
 # Enforce repo-specific conventions ruff/ty can't express.
 conventions *args:
-    uv run python -m tools.repolint {{args}}
+    uv run garuff check {{args}}
 
 # Run the test suite quietly.
 test *args:
@@ -30,5 +30,5 @@ test *args:
 # Auto-fix lint issues then reformat.
 fix:
     uv run ruff check --fix -q
-    uv run python -m tools.repolint --fix
+    uv run garuff check --fix
     uv run ruff format -q

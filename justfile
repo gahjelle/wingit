@@ -21,7 +21,7 @@ typecheck:
 
 # Enforce repo-specific conventions ruff/ty can't express.
 conventions *args:
-    uv run garuff check {{args}}
+    uv run garuff check -q {{args}}
 
 # Run the test suite quietly.
 test *args:

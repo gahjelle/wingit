@@ -1,0 +1,16 @@
+{
+  "harness": "codex",
+  "scenario": "tools",
+  "argv": [
+    "codex",
+    "exec",
+    "--json",
+    "--skip-git-repo-check",
+    "How many markdown files are in the current directory? Look, then answer with just the number."
+  ],
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_s": 5.8,
+  "stdout_bytes": 742,
+  "stderr_bytes": 39
+}

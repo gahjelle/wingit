@@ -1,0 +1,16 @@
+{
+  "harness": "codex",
+  "scenario": "prose",
+  "argv": [
+    "codex",
+    "exec",
+    "--json",
+    "--skip-git-repo-check",
+    "Reply with exactly one word: pineapple. No other text."
+  ],
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_s": 4.9,
+  "stdout_bytes": 319,
+  "stderr_bytes": 39
+}

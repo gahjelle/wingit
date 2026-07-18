@@ -1,0 +1,18 @@
+{
+  "harness": "copilot-text",
+  "scenario": "tools",
+  "argv": [
+    "copilot",
+    "-p",
+    "How many markdown files are in the current directory? Look, then answer with just the number.",
+    "-s",
+    "--allow-all-tools",
+    "--log-level",
+    "none"
+  ],
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_s": 20.9,
+  "stdout_bytes": 101,
+  "stderr_bytes": 0
+}

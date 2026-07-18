@@ -1,0 +1,4 @@
+Listing markdown files in the current directory to count them. Running glob with pattern "*.md".
+
+3
+

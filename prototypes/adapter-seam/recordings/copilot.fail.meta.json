@@ -1,0 +1,20 @@
+{
+  "harness": "copilot",
+  "scenario": "fail",
+  "argv": [
+    "copilot",
+    "-p",
+    "Reply with exactly one word: pineapple. No other text.",
+    "--output-format",
+    "json",
+    "--model",
+    "no-such-model-xyz",
+    "--log-level",
+    "none"
+  ],
+  "exit_code": 1,
+  "timed_out": false,
+  "elapsed_s": 8.4,
+  "stdout_bytes": 258,
+  "stderr_bytes": 69
+}

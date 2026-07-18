@@ -1,0 +1,19 @@
+{
+  "harness": "claude",
+  "scenario": "tools",
+  "argv": [
+    "claude",
+    "-p",
+    "How many markdown files are in the current directory? Look, then answer with just the number.",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--allowedTools",
+    "Bash,Glob,Read"
+  ],
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_s": 7.2,
+  "stdout_bytes": 7550,
+  "stderr_bytes": 0
+}

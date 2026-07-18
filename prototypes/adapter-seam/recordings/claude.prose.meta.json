@@ -1,0 +1,19 @@
+{
+  "harness": "claude",
+  "scenario": "prose",
+  "argv": [
+    "claude",
+    "-p",
+    "Reply with exactly one word: pineapple. No other text.",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--disallowedTools",
+    "Bash,Glob,Grep,Read,Edit,Write,WebFetch,WebSearch"
+  ],
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_s": 3.9,
+  "stdout_bytes": 5259,
+  "stderr_bytes": 0
+}

@@ -1,0 +1,16 @@
+{
+  "harness": "opencode",
+  "scenario": "prose",
+  "argv": [
+    "opencode",
+    "run",
+    "--format",
+    "json",
+    "Reply with exactly one word: pineapple. No other text."
+  ],
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_s": 5.8,
+  "stdout_bytes": 1045,
+  "stderr_bytes": 0
+}

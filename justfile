@@ -21,11 +21,19 @@ typecheck:
 
 # Enforce repo-specific conventions ruff/ty can't express.
 conventions *args:
-    uv run garuff check {{args}}
+    uv run garuff check -q src tests {{args}}
 
 # Run the test suite quietly.
 test *args:
     uv run pytest -q {{args}}
+
+# PROTOTYPE (issue #13) — replay recorded harness output through the candidate seam.
+prototype-seam:
+    uv run python prototypes/adapter-seam/tui.py
+
+# PROTOTYPE (issue #13) — re-record from the real harnesses. Slow and networked.
+prototype-seam-record *args:
+    uv run python prototypes/adapter-seam/record.py {{args}}
 
 # Auto-fix lint issues then reformat.
 fix:

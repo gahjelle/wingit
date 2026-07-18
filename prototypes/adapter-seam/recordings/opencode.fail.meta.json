@@ -1,0 +1,18 @@
+{
+  "harness": "opencode",
+  "scenario": "fail",
+  "argv": [
+    "opencode",
+    "run",
+    "--format",
+    "json",
+    "--model",
+    "no-such-model-xyz",
+    "Reply with exactly one word: pineapple. No other text."
+  ],
+  "exit_code": 1,
+  "timed_out": false,
+  "elapsed_s": 2.8,
+  "stdout_bytes": 218,
+  "stderr_bytes": 0
+}

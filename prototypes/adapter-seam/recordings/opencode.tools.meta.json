@@ -1,0 +1,17 @@
+{
+  "harness": "opencode",
+  "scenario": "tools",
+  "argv": [
+    "opencode",
+    "run",
+    "--format",
+    "json",
+    "--auto",
+    "How many markdown files are in the current directory? Look, then answer with just the number."
+  ],
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_s": 10.4,
+  "stdout_bytes": 3824,
+  "stderr_bytes": 0
+}

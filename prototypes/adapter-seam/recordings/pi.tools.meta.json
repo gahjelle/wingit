@@ -1,0 +1,17 @@
+{
+  "harness": "pi",
+  "scenario": "tools",
+  "argv": [
+    "pi",
+    "-p",
+    "--mode",
+    "json",
+    "-nc",
+    "How many markdown files are in the current directory? Look, then answer with just the number."
+  ],
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_s": 4.5,
+  "stdout_bytes": 26870,
+  "stderr_bytes": 0
+}

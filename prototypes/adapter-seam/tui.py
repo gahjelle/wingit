@@ -19,7 +19,7 @@ from seam import LEAKS, Capability, Outcome, divergence, reset_leaks, run  # noq
 
 RECORDINGS = Path(__file__).parent / "recordings"
 
-HARNESSES = ["claude", "opencode", "copilot", "codex"]
+HARNESSES = ["claude", "opencode", "copilot", "codex", "pi"]
 SCENARIOS = ["prose", "tools", "fail"]
 
 B, D, R = "\x1b[1m", "\x1b[2m", "\x1b[0m"
@@ -131,7 +131,7 @@ def render(harness: str, scenario: str) -> None:
 
 def footer() -> None:
     print(
-        f"  {D}harness:{R} {B}c{R}laude {B}o{R}pencode c{B}p{R}ilot {B}x{R}codex"
+        f"  {D}harness:{R} {B}c{R}laude {B}o{R}pencode c{B}p{R}ilot {B}x{R}codex p{B}i{R}"
         f"   {D}scenario:{R} {B}1{R}prose {B}2{R}tools {B}3{R}fail"
         f"   {D}|{R} {B}a{R}ll  {B}q{R}uit"
     )
@@ -182,6 +182,8 @@ def main() -> None:
                     harness = "copilot"
                 case "x":
                     harness = "codex"
+                case "i":
+                    harness = "pi"
                 case "1":
                     scenario = "prose"
                 case "2":

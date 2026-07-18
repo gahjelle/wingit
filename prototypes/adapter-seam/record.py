@@ -118,6 +118,20 @@ RUNS: dict[tuple[str, str], list[str]] = {
         "--log-level",
         "none",
     ],
+    # --- Pi: JSON mode; no sandbox at all, bash on by default.
+    ("pi", "prose"): ["pi", "-p", "--mode", "json", "-nt", "-nc", PROSE],
+    ("pi", "tools"): ["pi", "-p", "--mode", "json", "-nc", TOOLS],
+    ("pi", "fail"): [
+        "pi",
+        "-p",
+        "--mode",
+        "json",
+        "-nt",
+        "-nc",
+        "--model",
+        BAD_MODEL,
+        PROSE,
+    ],
     # --- Codex: cleanest JSON; read-only OS sandbox is the exec default.
     ("codex", "prose"): ["codex", "exec", "--json", "--skip-git-repo-check", PROSE],
     ("codex", "tools"): ["codex", "exec", "--json", "--skip-git-repo-check", TOOLS],
@@ -145,6 +159,10 @@ def record(harness: str, scenario: str, argv: list[str]) -> None:
             argv,
             cwd=WORKSPACE,
             capture_output=True,
+            # CRITICAL: pi blocks forever on an inherited stdin (0 bytes, no exit).
+            # codex announces "Reading additional input from stdin..." for the same
+            # reason. Closing stdin is part of the driver contract, not a detail.
+            stdin=subprocess.DEVNULL,
             text=True,
             timeout=TIMEOUT_S,
             check=False,

@@ -283,9 +283,72 @@ class CodexDriver:
         return iter(())
 
 
+# --- Pi ---------------------------------------------------------------------
+
+
+class PiDriver:
+    name = "pi"
+    capabilities = frozenset(
+        {
+            Capability.STREAMING_ANSWER,
+            Capability.SEPARABLE_REASONING,
+            Capability.SESSIONS,
+            # No sandbox of any kind; pi's own docs say project trust "is not a
+            # sandbox" and bash is on by default.
+        }
+    )
+
+    def __init__(self) -> None:
+        self._final: str | None = None
+        self._saw_answer = False
+
+    def argv(self, req: Request) -> list[str]:
+        argv = ["pi", "-p", "--mode", "json", "-nc"]
+        if not req.allow_tools:
+            argv.append("-nt")
+        return [*argv, req.prompt]
+
+    def feed(self, line: str) -> Iterator[Event]:
+        ev = _json(line)
+        if ev is None:
+            return
+        match ev.get("type"):
+            case "message_update":
+                sub = ev.get("assistantMessageEvent") or {}
+                match sub.get("type"):
+                    case "text_delta":
+                        self._saw_answer = True
+                        yield AnswerChunk(sub.get("delta", ""))
+                    case "thinking_delta":
+                        yield ReasoningChunk(sub.get("delta", ""))
+            case "tool_execution_start":
+                yield ToolActivity(str(ev.get("toolName", "?")))
+            case "turn_end":
+                # Last turn wins: an early turn's content is thinking + toolCall
+                # with no text at all.
+                text = "".join(
+                    b.get("text", "")
+                    for b in ev.get("message", {}).get("content", [])
+                    if b.get("type") == "text"
+                )
+                if text:
+                    self._final = text
+        return
+
+    def finish(self, harness_exit: int) -> Iterator[Event]:
+        if self._final is not None:
+            yield FinalAnswer(self._final)
+        if harness_exit != 0 and not self._saw_answer:
+            # LEAK: same shape as copilot — a failing run emits nothing at all on
+            # the JSON stream; the only detail is plain text on stderr.
+            leak(self.name, "failures emit nothing on the JSON stream; stderr+exit code only")
+            yield Failed("harness failed (detail only on stderr)")
+
+
 DRIVERS = {
     "claude": ClaudeDriver,
     "opencode": OpencodeDriver,
     "copilot": CopilotDriver,
     "codex": CodexDriver,
+    "pi": PiDriver,
 }

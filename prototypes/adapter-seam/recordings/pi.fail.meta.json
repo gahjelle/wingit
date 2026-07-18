@@ -1,0 +1,20 @@
+{
+  "harness": "pi",
+  "scenario": "fail",
+  "argv": [
+    "pi",
+    "-p",
+    "--mode",
+    "json",
+    "-nt",
+    "-nc",
+    "--model",
+    "no-such-model-xyz",
+    "Reply with exactly one word: pineapple. No other text."
+  ],
+  "exit_code": 1,
+  "timed_out": false,
+  "elapsed_s": 1.2,
+  "stdout_bytes": 0,
+  "stderr_bytes": 87
+}

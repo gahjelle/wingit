@@ -43,6 +43,13 @@ class ClaudeDriver:
             Capability.RELIABLE_FAILURE,
             Capability.SESSIONS,
             # No token deltas without --include-partial-messages; message-level only.
+            # STALE — do not copy into the real driver. ADR-0005 §2 decided
+            # Claude Code does NOT declare STREAMING_ANSWER: its streamed text
+            # matched `.result` on a tool-free prompt but diverged on a
+            # tool-using one ("I'll look at the current directory.3" vs "3"),
+            # and nothing marks the preamble until the run ends. Left in place
+            # because this branch is the reference for real harness output.
+            # See issue #14.
             Capability.STREAMING_ANSWER,
         }
     )
@@ -341,7 +348,10 @@ class PiDriver:
         if harness_exit != 0 and not self._saw_answer:
             # LEAK: same shape as copilot — a failing run emits nothing at all on
             # the JSON stream; the only detail is plain text on stderr.
-            leak(self.name, "failures emit nothing on the JSON stream; stderr+exit code only")
+            leak(
+                self.name,
+                "failures emit nothing on the JSON stream; stderr+exit code only",
+            )
             yield Failed("harness failed (detail only on stderr)")
 
 

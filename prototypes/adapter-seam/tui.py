@@ -19,8 +19,19 @@ from seam import LEAKS, Capability, Outcome, divergence, reset_leaks, run  # noq
 
 RECORDINGS = Path(__file__).parent / "recordings"
 
-HARNESSES = ["claude", "opencode", "copilot", "codex", "pi"]
-SCENARIOS = ["prose", "tools", "fail"]
+# Key -> name. One source of truth for both the selector rows and the dispatch,
+# so the displayed key is always the key that actually works.
+HARNESS_KEYS = {
+    "c": "claude",
+    "o": "opencode",
+    "p": "copilot",
+    "x": "codex",
+    "i": "pi",
+}
+SCENARIO_KEYS = {"1": "prose", "2": "tools", "3": "fail"}
+
+HARNESSES = list(HARNESS_KEYS.values())
+SCENARIOS = list(SCENARIO_KEYS.values())
 
 B, D, R = "\x1b[1m", "\x1b[2m", "\x1b[0m"
 RED, GREEN, YELLOW, CYAN = "\x1b[31m", "\x1b[32m", "\x1b[33m", "\x1b[36m"
@@ -51,15 +62,15 @@ def render(harness: str, scenario: str) -> None:
     print("\033[2J\033[H", end="")
     print(f"{B}adapter seam prototype{R} {D}— issue #13{R}\n")
 
-    # Selector row.
+    # Selector rows, keyed off the same maps the dispatch uses.
     row = "  ".join(
-        f"{B}{CYAN}[{h[0]}] {h}{R}" if h == harness else f"{D}[{h[0]}] {h}{R}"
-        for h in HARNESSES
+        f"{B}{CYAN}[{k}] {name}{R}" if name == harness else f"{D}[{k}] {name}{R}"
+        for k, name in HARNESS_KEYS.items()
     )
     print(f"  {row}")
     row = "  ".join(
-        f"{B}{CYAN}[{s[0]}] {s}{R}" if s == scenario else f"{D}[{s[0]}] {s}{R}"
-        for s in SCENARIOS
+        f"{B}{CYAN}[{k}] {name}{R}" if name == scenario else f"{D}[{k}] {name}{R}"
+        for k, name in SCENARIO_KEYS.items()
     )
     print(f"  {row}\n")
 
@@ -130,11 +141,8 @@ def render(harness: str, scenario: str) -> None:
 
 
 def footer() -> None:
-    print(
-        f"  {D}harness:{R} {B}c{R}laude {B}o{R}pencode c{B}p{R}ilot {B}x{R}codex p{B}i{R}"
-        f"   {D}scenario:{R} {B}1{R}prose {B}2{R}tools {B}3{R}fail"
-        f"   {D}|{R} {B}a{R}ll  {B}q{R}uit"
-    )
+    """Print the keys the selector rows above don't already show."""
+    print(f"  {D}[a] leak summary across all harnesses   [q] quit{R}")
 
 
 def summary() -> None:
@@ -171,30 +179,15 @@ def main() -> None:
         render(harness, scenario)
         while True:
             key = sys.stdin.read(1).lower()
-            match key:
-                case "q":
-                    break
-                case "c":
-                    harness = "claude"
-                case "o":
-                    harness = "opencode"
-                case "p":
-                    harness = "copilot"
-                case "x":
-                    harness = "codex"
-                case "i":
-                    harness = "pi"
-                case "1":
-                    scenario = "prose"
-                case "2":
-                    scenario = "tools"
-                case "3":
-                    scenario = "fail"
-                case "a":
-                    summary()
-                    sys.stdin.read(1)
-                case _:
-                    pass
+            if key == "q":
+                break
+            if key == "a":
+                summary()
+                sys.stdin.read(1)
+            elif key in HARNESS_KEYS:
+                harness = HARNESS_KEYS[key]
+            elif key in SCENARIO_KEYS:
+                scenario = SCENARIO_KEYS[key]
             render(harness, scenario)
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, old)

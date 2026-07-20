@@ -47,9 +47,11 @@ every effective value, but seeing a value and pinning a value are no longer the 
    run from anywhere, so behaviour keyed on the working directory is surprising; and a
    config file that is *content from a cloned repo* is a trust surface belonging to
    [issue #20](https://github.com/gahjelle/wingit/issues/20), not to config layering.
-6. **Path via `platformdirs`** — `user_config_dir("wingit")` + `config.toml`, so macOS
-   gets a native location rather than a transplanted XDG one. `WINGIT_CONFIG_FILE`
-   overrides with a direct file path, which is what tests and throwaway runs want.
+6. **Path via `platformdirs`** — `user_config_path("wingit") / "config.toml"`, so macOS
+   gets a native location rather than a transplanted XDG one. The `_path` variant returns
+   a `Path` directly, keeping the whole config path `pathlib`-native.
+   `WINGIT_CONFIG_FILE` overrides with a direct file path, which is what tests and
+   throwaway runs want.
 7. **Detection is ranked, never interactive.** Preference order is Claude Code, Pi,
    Opencode, Copilot, Codex; the highest-ranked harness on `PATH` wins. First run can
    happen inside a pipe, so wingit never prompts. With no harness present, **no file is

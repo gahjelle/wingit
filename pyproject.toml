@@ -24,11 +24,13 @@ wingit = "wingit:main"
 dev = [
     "bumpver>=2026.1132",
     "garuff>=2026.7.0",
+    "gha-update>=0.2.0",
     "ipython>=9.15.0",
     "prek>=0.4.6",
     "pytest>=9.1.1",
     "ruff>=0.15.20",
     "ty>=0.0.56",
+    "zizmor>=1.28.0",
 ]
 
 [tool.ruff]
@@ -66,17 +68,11 @@ exempt-modules = ["pathlib", "datetime", "typing", "wingit.cli"]
 exempt-modules = ["pathlib", "datetime", "typing", "wingit.cli"]
 
 [tool.bumpver]
-# The v-prefix lives only in the tag/current_version; `{pep440_version}` strips it
-# so `[project].version` stays a bare PEP 440 string. See
-# docs/adr/0010-calver-via-bumpver.md. Seeded one month back so the first
-# `just release` produces 2026.7.0 through the ordinary month-rollover path.
 current_version = "v2026.6.0"
 version_pattern = "vYYYY.MM.PATCH"
 commit_message = "bump version {old_version} -> {new_version}"
 tag_message = "{new_version}"
 tag_scope = "default"
-# uv itself recomputes uv.lock into the bump commit, so pyproject.toml and
-# uv.lock stay consistent by construction.
 pre_commit_hook = ".pre-commit-bumpver.sh"
 commit = true
 tag = true

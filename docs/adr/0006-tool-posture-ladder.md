@@ -9,6 +9,13 @@ Decided in [issue #15](https://github.com/gahjelle/wingit/issues/15). Refines
 [ADR-0005](0005-capability-negotiating-harness-seam.md) §4 and supersedes the TTY-inferred
 default from [issue #9](https://github.com/gahjelle/wingit/issues/9).
 
+> **Scope narrowed by [ADR-0011](0011-project-environment-inherited-whole.md).** The ladder
+> governs what the *model* may do. It does not constrain what the *project* does unasked:
+> `a` inherits project hooks, which execute arbitrary shell at every rung — `none` included —
+> before the model acts. No decision below is reversed, but rung `none` does not mean "nothing
+> can happen." See [What the ladder does not
+> cover](0011-project-environment-inherited-whole.md#what-the-ladder-does-not-cover).
+
 ## The ladder
 
 | rung | meaning |

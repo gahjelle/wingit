@@ -4,6 +4,8 @@ default: check
 check: fmt-check lint conventions typecheck test
 
 # Cut a release: bump the CalVer version, re-lock, commit, tag, and push.
+# Bare `just release` rolls the month over; a second release within the same
+# month needs `just release --patch`.
 release *args:
     uv run bumpver update {{args}}
 

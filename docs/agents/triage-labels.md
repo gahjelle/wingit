@@ -12,4 +12,14 @@ The skills speak in terms of five canonical triage roles. This file maps those r
 
 When a skill mentions a role (e.g. "apply the AFK-ready triage label"), use the corresponding label string from this table.
 
+## Labels outside the mapping
+
+The table above is a *mapping*: every row answers "what do we call this canonical role?". This repo also uses one label that has no canonical counterpart, so it gets no row — a blank left-hand column would read as a role the skills could ask for.
+
+| Label          | Meaning                                        |
+| -------------- | ---------------------------------------------- |
+| `needs-design` | Sliced and ordered, awaiting its design session |
+
+A tracer bullet carries `needs-design` from creation until its design session finishes, then flips to `ready-for-agent`. It is not `needs-triage` — these issues are the most thoroughly evaluated in the repo — and it is not mere absence of a label, which a triage sweep could not distinguish from "nobody looked yet".
+
 Edit the right-hand column to match whatever vocabulary you actually use.

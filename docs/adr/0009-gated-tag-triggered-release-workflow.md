@@ -50,12 +50,20 @@ The workflow, the bumpver setup, and the two out-of-repo prerequisites are a **c
 tracer bullet** — there is no user-visible behaviour here to slice. But they are not
 deferred to the end either: the prerequisites are the part that can only be tested by
 releasing, and discovering a trusted-publishing misconfiguration on the day you wanted to
-ship is the failure this ordering avoids. Creating the PyPI **pending publisher** also
-reserves the name `wingit`, which was unregistered when #26 was resolved, without
-publishing anything.
+ship is the failure this ordering avoids.
 
-The first `just release` is a separate matter and belongs at the **end** of the MVP:
-nothing depends on it, and a half-built `a` should not be installable under its real name.
+**A pending publisher does not reserve the name.** #26 assumed it did, and this ADR
+originally recorded that as part of the rationale; it is wrong.
+[PyPI's documentation](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/)
+is explicit that a pending publisher "does not create a project or reserve a project's name
+until it is actually used to publish", and that if someone else registers the name first,
+the pending publisher is **invalidated** — so squatting would break the configured release
+path, not merely cost us the name. `wingit` was unregistered when #26 was resolved and
+still is, but it stays unclaimed until the first successful publish, whenever that happens.
+
+The first `just release` is therefore the only thing that claims the name. It is otherwise
+a separate matter that belongs at the **end** of the MVP: nothing depends on it, and a
+half-built `a` should not be installable under its real name.
 
 Two prerequisites therefore exist outside this repo, and until both exist no tag can
 publish:

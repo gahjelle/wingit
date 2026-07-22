@@ -1,7 +1,19 @@
 default: check
 
 # Run all quality gates in order, stopping on the first failure.
-check: fmt-check lint conventions typecheck test
+check: fmt-check lint conventions typecheck test audit-workflows
+
+# Audit the GitHub Actions workflows for security issues with zizmor.
+audit-workflows:
+    uv run zizmor .github/workflows -q
+
+# Pin every workflow `uses:` to a commit SHA with gha-update.
+pin-workflows:
+    uv run gha-update
+
+# Cut a release: bump the version, re-lock, commit, tag, and push.
+release *args:
+    uv run bumpver update --patch {{args}}
 
 # Auto-format the codebase with ruff.
 fmt:

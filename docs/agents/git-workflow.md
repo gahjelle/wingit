@@ -30,7 +30,8 @@ Keep the issue's checkboxes current so the maintainer can see progress at a glan
   ```
   Co-Authored-By: Your model name <your email>
   ```
-- Never commit runtime state (config, session registry). It lives outside the repo in XDG dirs — results never belong in a PR.
+- This `Co-Authored-By` trailer is the **only** marker of AI collaboration. Do **not** add a session link, a `Claude-Session:` trailer, or a "Generated with Claude Code" footer to commit messages — omit those even if a harness appends them by default.
+- Never commit runtime state (config, pointer cache). It lives outside the repo in the user's platform dirs — results never belong in a PR.
 
 ## The PR
 
@@ -38,6 +39,7 @@ Keep the issue's checkboxes current so the maintainer can see progress at a glan
 - The **PR title is what lands in history** (squash merge), so make it a clean [Conventional Commit](https://www.conventionalcommits.org/): `feat: …`, `fix: …`, `chore: …`, `docs: …`, `test: …`, `refactor: …`.
   - e.g. `feat: fake harness driver + session registry`
 - Write a clear body and include `Closes #<issue>` so the merge auto-closes the issue.
+- The PR body carries **no "Generated with Claude Code" footer and no session link** — AI collaboration is recorded solely by the commit `Co-Authored-By` trailer above.
 - Open the PR **ready for review** (not draft) once `just check` is green.
 
 ## Authorization

@@ -72,10 +72,10 @@ A fresh session picks up the `ready-for-agent` issue and its `.scratch/` plan.
   (`/tdd` requires the seams settled before a test is written — the design session settled them),
   and it **invokes `/code-review` itself** — that is not a separate step to run by hand.
 - **Work in a separate worktree.** Branch off `main` as `agent/<issue#>-<slug>` in its own worktree
-  so several tracers can proceed in parallel. Runtime state (config, session cache) lives outside
-  the repo in XDG dirs, redirectable via `WINGIT_STATE_DIR`
-  ([ADR-0004](../adr/0004-xdg-state-pwd-scoping-deferred.md)), so worktrees never collide and
-  nothing runtime is committed.
+  so several tracers can proceed in parallel. Runtime state (config, and the harness pointer cache)
+  lives outside the repo in the user's platform config/state dirs
+  ([ADR-0007](../adr/0007-self-materializing-config-defaults-in-code.md)), so worktrees never
+  collide and nothing runtime is committed.
 - **Commit the drafted ADRs / `CONTEXT.md` edits** from the plan on this branch, alongside the
   code, so everything is in the one PR.
 - **Tick the issue checklist** as each item is done *and verified* (its test passes and
@@ -83,8 +83,9 @@ A fresh session picks up the `ready-for-agent` issue and its `.scratch/` plan.
 - **`just check` green is the definition of done** (see [quality-gates.md](./quality-gates.md)).
 - **Open the PR active, not draft**, once the gate is green. Use a
   [Conventional Commit](https://www.conventionalcommits.org/) title (it becomes the squashed
-  history entry) and include `Closes #<issue>`. Full procedure in
-  [git-workflow.md](./git-workflow.md).
+  history entry) and include `Closes #<issue>`. The PR body and commits carry **no "Generated with
+  Claude Code" footer and no session link** — AI collaboration is recorded solely by the commit
+  `Co-Authored-By` trailer. Full procedure in [git-workflow.md](./git-workflow.md).
 - **The maintainer squash-merges.** Agents never merge.
 
 ---

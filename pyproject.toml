@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "wingit"
-version = "0.1.0"
+version = "2026.6.0"
 description = "Run your agent harness in headless mode"
 readme = "README.md"
 authors = [{ name = "Geir Arne Hjelle", email = "geirarne@gmail.com" }]
@@ -22,6 +22,7 @@ wingit = "wingit:main"
 
 [dependency-groups]
 dev = [
+    "bumpver>=2026.1132",
     "garuff>=2026.7.0",
     "ipython>=9.15.0",
     "prek>=0.4.6",
@@ -63,6 +64,29 @@ exempt-modules = ["pathlib", "datetime", "typing", "wingit.cli"]
 # (it does not read ruff's), so mirror the modules in
 # [tool.ruff.lint.flake8-type-checking].exempt-modules above.
 exempt-modules = ["pathlib", "datetime", "typing", "wingit.cli"]
+
+[tool.bumpver]
+# The v-prefix lives only in the tag/current_version; `{pep440_version}` strips it
+# so `[project].version` stays a bare PEP 440 string. See
+# docs/adr/0010-calver-via-bumpver.md. Seeded one month back so the first
+# `just release` produces 2026.7.0 through the ordinary month-rollover path.
+current_version = "v2026.6.0"
+version_pattern = "vYYYY.MM.PATCH"
+commit_message = "bump version {old_version} -> {new_version}"
+tag_message = "{new_version}"
+tag_scope = "default"
+# uv itself recomputes uv.lock into the bump commit, so pyproject.toml and
+# uv.lock stay consistent by construction.
+pre_commit_hook = ".pre-commit-bumpver.sh"
+commit = true
+tag = true
+push = true
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'current_version = "{version}"',
+    'version = "{pep440_version}"',
+]
 
 [tool.ty.src]
 include = ["src", "tests"]

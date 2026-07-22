@@ -3,6 +3,10 @@ default: check
 # Run all quality gates in order, stopping on the first failure.
 check: fmt-check lint conventions typecheck test
 
+# Cut a release: bump the CalVer version, re-lock, commit, tag, and push.
+release *args:
+    uv run bumpver update {{args}}
+
 # Auto-format the codebase with ruff.
 fmt:
     uv run ruff format -q

@@ -108,9 +108,13 @@ use; it simply never covered this door.
   capture any of it.
 - **Drivers own a small environment denylist** that will drift as harnesses add variables. The
   failure mode is missing one, not breaking a working setup.
-- **Pi may need `-a` for parity** on project-local extensions — `--approve` governs executable
-  project-local files, not context files (`AGENTS.md` loads without it, verified). To be
-  settled when the Pi driver is built.
+- **Pi passes `--approve` (`-a`) for parity** on project-local extensions — `--approve` governs
+  executable project-local files, not context files (`AGENTS.md` loads without it, verified).
+  Settled when the Pi driver was built ([issue #37](https://github.com/gahjelle/wingit/issues/37),
+  T2): the Pi driver passes `-a`, because *not* passing it would make Pi the one harness that
+  silently suppresses part of the project environment — precisely the split this ADR rejects. It
+  is the same choice as decision 3 (executable project config is inherited too) and the same
+  cost: `a` on Pi trusts and runs project-local code, mitigated only by the trust warning above.
 
 ## Considered Options
 

@@ -5,7 +5,7 @@ check: fmt-check lint conventions typecheck test audit-workflows
 
 # Audit the GitHub Actions workflows for security issues with zizmor.
 audit-workflows:
-    uv run zizmor .github/workflows -q
+    uv run zizmor .github/workflows -q --offline
 
 # Pin every workflow `uses:` to a commit SHA with gha-update.
 pin-workflows:

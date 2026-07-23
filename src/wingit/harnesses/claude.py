@@ -3,9 +3,9 @@
 Claude Code does not stream a trustworthy answer (ADR-0005 §2): its streamed
 `assistant` text carries pre-tool preamble that diverges from the deduplicated
 `.result`. So this driver ignores everything but the terminal `result` event and
-takes the Answer from `.result` alone (D3/D4). Failure hides under
-`subtype:"success"`; the in-band signal is `is_error` (D5), with the process
-exit code authoritative in the core.
+takes the Answer from `.result` alone. Failure hides under `subtype:"success"`;
+the in-band signal is `is_error`, with the process exit code authoritative in
+the core.
 """
 
 import json
@@ -34,14 +34,14 @@ class ClaudeDriver:
     """Normalizes Claude Code's stream-json output into `Event`s."""
 
     name = "claude"
-    # Claude: streams=no, shows reasoning=yes, supports --tools none=yes,
-    # stores every session (so cannot run without storing one)=no (D2).
+    # Claude streams no trustworthy answer, shows reasoning, and supports
+    # `--tools none`, but stores every session, so it cannot run without one.
     capabilities = frozenset(
         {Capability.SHOWS_REASONING, Capability.SUPPORTS_TOOLS_NONE}
     )
 
     def argv(self, run: Run) -> list[str]:
-        """Build `claude -p` in full-approval headless mode (D7)."""
+        """Build `claude -p` in full-approval headless mode."""
         return [
             "claude",
             "-p",

@@ -1,24 +1,29 @@
 """wingit: run your agent harness in headless mode behind a thin, pipeable CLI."""
 
 import sys
+from typing import TYPE_CHECKING
 
 from cyclopts import CycloptsError
 
 from wingit.cli import app
+from wingit.schemas import ExitCode
 
-__all__ = ["USAGE_EXIT", "main"]
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
-# Usage errors get their own exit code, distinct from a harness failure (exit 1),
-# per the 0/1/2 contract (D5). cyclopts itself exits 1 on a parse error, so main()
-# remaps it: it lets cyclopts print the detail, then exits 2.
-USAGE_EXIT = 2
+__all__ = ["main"]
 
 
-def main() -> None:
-    """Entry point for the `a` / `wingit` command: run the CLI and exit."""
+def main(argv: Sequence[str] | None = None) -> None:
+    """Entry point for the `wingit` / `a` command: run the CLI and exit.
+
+    `argv` defaults to `None`, which lets cyclopts read `sys.argv`; tests pass a
+    token list directly. cyclopts only ever exits 1 on a parse error, so this
+    catches it, lets cyclopts print the detail, and remaps to the usage code —
+    the one place the 0/1/2 contract needs a distinct exit for a bad invocation.
+    """
     try:
-        code = app(sys.argv[1:], exit_on_error=False)
+        code = app(argv, exit_on_error=False)
     except CycloptsError:
-        # cyclopts has already printed the error panel to stderr.
-        sys.exit(USAGE_EXIT)
+        sys.exit(ExitCode.USAGE)
     sys.exit(code)

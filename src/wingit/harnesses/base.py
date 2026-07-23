@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Sequence
+    from collections.abc import Iterable, Iterator
 
     from wingit.schemas import Capability, Event, Run
 
@@ -20,13 +20,14 @@ __all__ = ["HarnessDriver", "ProcessRunner", "RunResult"]
 
 @dataclass(frozen=True, kw_only=True)
 class RunResult:
-    """The captured outcome of one harness invocation (D10).
+    """The captured outcome of one harness invocation.
 
-    `stdout_lines` is a sequence in T1; T7 swaps a live line-iterator behind the
-    same `ProcessRunner` Protocol without changing this shape.
+    `stdout_lines` is an iterable of lines: a materialized list today, but typed
+    so a live line-iterator can sit behind the same `ProcessRunner` Protocol
+    without changing this shape. The core only ever iterates it once.
     """
 
-    stdout_lines: Sequence[str]
+    stdout_lines: Iterable[str]
     stderr: str
     exit_code: int
 

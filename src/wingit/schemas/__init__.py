@@ -7,7 +7,7 @@ produced them.
 """
 
 from dataclasses import dataclass
-from enum import StrEnum
+from enum import IntEnum, StrEnum
 
 from pydantic import BaseModel, ConfigDict
 
@@ -15,6 +15,7 @@ __all__ = [
     "AnswerChunk",
     "Capability",
     "Event",
+    "ExitCode",
     "Failed",
     "FinalAnswer",
     "FrozenModel",
@@ -37,11 +38,24 @@ class StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
+class ExitCode(IntEnum):
+    """The process exit codes wingit promises (`CONTEXT.md`, ADR-0005).
+
+    `OK` is a clean answer, `FAILURE` is any harness or environmental failure,
+    and `USAGE` is a malformed invocation — distinct so callers can tell a bad
+    command line from a run that reached the harness and failed.
+    """
+
+    OK = 0
+    FAILURE = 1
+    USAGE = 2
+
+
 class Capability(StrEnum):
     """A user-visible property of a harness, declared per driver (ADR-0005).
 
-    The four members are `CONTEXT.md`'s user-visible capabilities. T1 populates
-    Claude's set but reads none of them; T2+ negotiate against them.
+    The four members are `CONTEXT.md`'s user-visible capabilities; a driver
+    declares the ones its harness has, and the core negotiates against them.
     """
 
     STREAMS = "streams"
@@ -53,8 +67,8 @@ class Capability(StrEnum):
 class Run(FrozenModel):
     """A single ask to run against a harness.
 
-    T1 carries only the prompt; cwd is the runner's concern and model/tools
-    arrive in later tracers.
+    Carries only the prompt for now; cwd is the runner's concern, and model and
+    tool selection arrive alongside the features that need them.
     """
 
     prompt: str

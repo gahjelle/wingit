@@ -2,8 +2,8 @@
 
 The reduction is exit-code-primary (ADR-0005 §3): a non-zero child exit means
 failure regardless of any `FinalAnswer`, and an empty answer on a clean exit is
-also a failure (D5). The decision logic is a pure function over the events and
-the exit code, so it is trivially testable with no I/O.
+also a failure. The decision logic is a pure function over the events and the
+exit code, so it is trivially testable with no I/O.
 """
 
 from dataclasses import dataclass
@@ -14,6 +14,7 @@ from wingit import console
 from wingit.schemas import (
     AnswerChunk,
     Event,
+    ExitCode,
     Failed,
     FinalAnswer,
     ReasoningChunk,
@@ -27,9 +28,6 @@ if TYPE_CHECKING:
     from wingit.harnesses.base import HarnessDriver, ProcessRunner
 
 __all__ = ["Outcome", "dispatch", "reduce_events"]
-
-EXIT_OK = 0
-EXIT_FAIL = 1
 
 GENERIC_FAILURE_MESSAGE = "harness failed"
 
@@ -55,7 +53,7 @@ def reduce_events(
     exit_code: int,
     child_stderr: str,
 ) -> Outcome:
-    """Reduce normalized events plus the child exit code to an `Outcome` (D5/D8)."""
+    """Reduce normalized events plus the child exit code to an `Outcome`."""
     answer = ""
     reasoning: list[str] = []
     failure_gist = ""
@@ -76,8 +74,8 @@ def reduce_events(
     if failed:
         # In-band gist first, then captured child stderr, then a generic message.
         error = failure_gist or child_stderr.strip() or GENERIC_FAILURE_MESSAGE
-        return Outcome(answer="", reasoning=[], error=error, exit_code=EXIT_FAIL)
-    return Outcome(answer=answer, reasoning=reasoning, error="", exit_code=EXIT_OK)
+        return Outcome(answer="", reasoning=[], error=error, exit_code=ExitCode.FAILURE)
+    return Outcome(answer=answer, reasoning=reasoning, error="", exit_code=ExitCode.OK)
 
 
 def collect_events(
@@ -100,7 +98,7 @@ def dispatch(run: Run, *, driver: HarnessDriver, runner: ProcessRunner) -> int:
     outcome = reduce_events(
         events, exit_code=result.exit_code, child_stderr=result.stderr
     )
-    if outcome.exit_code == EXIT_OK:
+    if outcome.exit_code == ExitCode.OK:
         for line in outcome.reasoning:
             console.write_reasoning(line)
         console.write_answer(outcome.answer)

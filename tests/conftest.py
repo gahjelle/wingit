@@ -4,7 +4,7 @@ The real `ClaudeDriver` and the real core run on top of `RecordedRunner`, so the
 whole pipeline — argv, JSON parse, `is_error` trap, `.result` extraction,
 reduction, stdout/stderr split, exit code — is exercised against ground-truth
 bytes. Only the OS-level spawn is stubbed; that is validated by the manual
-live-check (T2), as it would be under any fast test approach.
+live-check, as it would be under any fast test approach.
 """
 
 from dataclasses import dataclass
@@ -27,7 +27,7 @@ class RecordedRunner:
     stderr: str = ""
     exit_code: int = 0
 
-    def run(self, argv: list[str], *, cwd: Path) -> RunResult:  # noqa: ARG002
+    def run(self, argv: list[str], *, cwd: Path) -> RunResult:  # noqa: ARG002 - Protocol signature; argv/cwd not consulted on replay
         """Return the recorded output, ignoring argv and cwd."""
         return RunResult(
             stdout_lines=self.stdout_lines,

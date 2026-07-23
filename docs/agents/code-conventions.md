@@ -11,7 +11,7 @@
 wingit follows a thin-CLI split (mirroring the structure that worked well upstream):
 
 - `cli/` — thin layer: argument parsing and dispatch only, no domain logic.
-- `harnesses/` — one driver per harness. `harnesses/base.py` defines the `HarnessDriver` and `ProcessRunner` Protocols; real drivers (e.g. `harnesses/claude.py`) build the argv and normalize output; `runner.py` holds the real `ProcessRunner`. The injected test seam is a fake `ProcessRunner` (not a fake driver) in `tests/`, running the real driver on recorded bytes (see [testing.md](./testing.md) and [ADR-0014](../adr/0014-fake-the-io-boundary-not-the-driver.md), superseding [ADR-0003](../adr/0003-fake-harness-driver-test-seam.md)).
+- `harnesses/` — one driver per harness. `harnesses/base.py` defines the `HarnessDriver` and `ProcessRunner` Protocols; real drivers (e.g. `harnesses/claude.py`) build the argv and normalize output; `runner.py` holds the real `ProcessRunner`. The injected test seam is a fake `ProcessRunner` (not a fake driver) in `tests/`, running the real driver on recorded bytes (see [testing.md](./testing.md) and [ADR-0014](../adr/0014-fake-the-io-boundary-not-the-driver.md)).
 - `schemas/` — typed domain models on the project's `FrozenModel`/`StrictModel` bases (see GAC002).
 - `console.py` — the output contract: the **Answer** goes to stdout, **Reasoning** to stderr (see `CONTEXT.md`).
 - `sessions.py` — the session registry mapping session name → harness-native UUID.
@@ -97,6 +97,11 @@ lives under `[tool.garuff]` in `pyproject.toml`. Each rule and how to satisfy it
 - Thin `cli/` layer — application logic lives in domain modules, not in CLI handlers.
 - Harness drivers live in `harnesses/` and follow the `HarnessDriver` Protocol in `harnesses/base.py`.
 - Avoid underscore-prefixed names for "private" symbols — the visual noise outweighs the benefit. Control the public API with `__all__` when a module needs to distinguish exported names from internal helpers.
+
+## Comments
+
+- **No implementation-plan notation in comments or docstrings.** Decision tags from an implementation plan or hand-off (`D3`, `D5`, …) and tracer numbers (`T1`, `T7`, …) are scaffolding: they lose all context the moment the PR merges, and go stale within a few rounds. Explain the *reasoning* in prose instead, so the comment stands on its own.
+- **Refer to ADRs, sparingly.** ADRs are permanent, numbered documents, so `(ADR-0005 §3)` is a durable pointer — cite one when a comment needs to anchor a decision. Keep such references few, and **when an ADR is superseded, update the comments that cite it** to point at the successor (the same rule applies to references in `docs/`).
 
 ## Domain vocabulary
 

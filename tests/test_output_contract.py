@@ -55,7 +55,7 @@ def test_pipe_citizenship_exactly_one_trailing_newline(
 def test_answer_with_trailing_newlines_collapses_to_one(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    """Test that a `.result` ending in several newlines prints exactly one (D3)."""
+    """Test that a `.result` ending in several newlines prints exactly one."""
     crafted = (
         '{"type":"result","subtype":"success","is_error":false,"result":"hi\\n\\n"}'
     )
@@ -109,8 +109,8 @@ def test_empty_answer_on_clean_exit_is_failure(
 def test_reasoning_channel_kept_separate_from_answer() -> None:
     """Test that a `ReasoningChunk` is routed to Reasoning while the Answer stays clean.
 
-    Claude emits no reasoning in T1 (D6), so this exercises the built-but-silent
-    channel at the reduction level with a crafted event stream.
+    The Claude driver emits no reasoning yet, so this exercises the built-but-
+    silent channel at the reduction level with a crafted event stream.
     """
     events: list[Event] = [
         ReasoningChunk(text="thinking about it"),

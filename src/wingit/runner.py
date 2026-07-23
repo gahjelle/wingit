@@ -1,21 +1,18 @@
 """The real `ProcessRunner`: spawns a harness and captures its output.
 
 Spawn contract (ADR-0005 §5, ADR-0011 §5): `stdin` is `DEVNULL`, the child runs
-in wingit's own cwd, and stdout/stderr are captured (never forwarded live). T1
-reads all output then returns; T7 upgrades this to a live line-iterator behind
-the same `ProcessRunner` Protocol.
+in wingit's own cwd, and stdout/stderr are captured (never forwarded live). It
+reads all output then returns; a future line-iterator can sit behind the same
+`ProcessRunner` Protocol without changing callers.
 """
 
 import subprocess
 from pathlib import Path
 
 from wingit.harnesses.base import RunResult
+from wingit.schemas import ExitCode
 
-__all__ = ["HARNESS_NOT_FOUND_EXIT", "SubprocessRunner"]
-
-# A missing harness binary is an environmental failure, not a usage error, so it
-# maps to exit 1 rather than 2 (§5.4). Ranked "no harness" detection is T3/T9.
-HARNESS_NOT_FOUND_EXIT = 1
+__all__ = ["SubprocessRunner"]
 
 
 class SubprocessRunner:
@@ -33,10 +30,12 @@ class SubprocessRunner:
                 check=False,
             )
         except FileNotFoundError:
+            # A missing harness binary is an environmental failure, not a usage
+            # error, so it maps to the failure exit rather than the usage one.
             return RunResult(
                 stdout_lines=[],
                 stderr=f"harness not found: {argv[0]!r} is not on PATH",
-                exit_code=HARNESS_NOT_FOUND_EXIT,
+                exit_code=ExitCode.FAILURE,
             )
         return RunResult(
             stdout_lines=completed.stdout.splitlines(),

@@ -27,3 +27,8 @@ jobs:
 
       - name: Check
         run: just check
+
+      - name: Audit workflows (online)
+        run: just audit-workflows-ci
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

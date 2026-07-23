@@ -7,6 +7,12 @@ on:
 
 permissions: {}
 
+# Serialize releases: queue a new tag behind an in-flight run, never cancel a
+# publish mid-flight (an interrupted upload could leave a half-released version).
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 jobs:
   # Re-verify the tagged SHA: a tag can sit on any commit, so never publish
   # something the gates have not passed here.

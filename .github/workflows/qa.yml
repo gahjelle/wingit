@@ -6,6 +6,11 @@ on:
 
 permissions: {}
 
+# Cancel superseded runs on the same branch/PR so only the latest push is checked.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check:
     runs-on: ubuntu-latest

@@ -8,7 +8,6 @@ audit-workflows:
     uv run zizmor .github/workflows -q --offline
 
 # Audit workflows online: adds network-backed rules (e.g. known-vulnerable-actions).
-# Needs a GitHub token in GH_TOKEN/GITHUB_TOKEN; meant for CI, which has one.
 audit-workflows-ci:
     uv run zizmor .github/workflows -q
 

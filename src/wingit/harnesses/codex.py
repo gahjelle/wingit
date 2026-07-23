@@ -8,7 +8,7 @@ reliable: either a `turn.failed` event or an `error` item.
 
 from typing import TYPE_CHECKING, Any, ClassVar
 
-from wingit.harnesses.claude import FAILURE_GIST_LIMIT, parse_json_object
+from wingit.harnesses.base import FAILURE_GIST_LIMIT, parse_json_object
 from wingit.schemas import (
     Capability,
     Event,

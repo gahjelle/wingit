@@ -49,7 +49,7 @@ def resolve_harness(
     Selecting a harness more than once by any combination — two shorts, or a
     short plus the long flag, even when they agree — is a usage error, since
     cyclopts does not auto-mutex these flags. With nothing selected, the default
-    is Claude (T3 makes this config-driven).
+    is Claude; a later slice makes this default config-driven.
     """
     chosen_shorts = {"cl": cl, "cp": cp, "cx": cx, "oc": oc, "pi": pi}
     selected = [SHORT_FLAGS[name] for name, on in chosen_shorts.items() if on]

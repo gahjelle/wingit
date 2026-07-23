@@ -63,14 +63,23 @@ live-check:
         "$a" "$flag" "$ask"
         echo "  -> exit $?"
     done
-    echo "=== pipe smoke (Answer verbatim, one newline, no markup) ==="
-    out=$("$a" "reply with exactly one word: pineapple" | cat)
-    printf 'stdout: %q\n' "$out"
+    echo "=== pipe smoke (Answer verbatim, one trailing newline, no markup) ==="
+    tmp=$(mktemp)
+    "$a" "reply with exactly one word: pineapple" > "$tmp"
+    printf 'stdout: %q  (bytes: %s)\n' "$(cat "$tmp")" "$(wc -c < "$tmp" | tr -d ' ')"
+    [ "$(tail -c1 "$tmp" | od -An -tx1 | tr -d ' ')" = "0a" ] && echo "  -> one trailing newline" || echo "  !! FAIL: no trailing newline"
+    grep -q $'\x1b' "$tmp" && echo "  !! FAIL: ANSI/Rich markup present" || echo "  -> no markup"
+    rm -f "$tmp"
     echo "=== scripted SIGINT (expect exit 130, no surviving child) ==="
     "$a" "count slowly from 1 to 60, one number per line, pausing to think between each" &
     pid=$!
     sleep 2
+    # Capture the live harness child(ren) before the reap reparents them to init,
+    # so the survival probe is meaningful rather than vacuously empty.
+    kids=$(pgrep -P "$pid")
     kill -INT "$pid"
     wait "$pid"; code=$?
     echo "  -> exit ${code} (expect 130)"
-    if pgrep -P "$pid" >/dev/null; then echo "  !! FAIL: surviving child"; else echo "  -> no surviving child"; fi
+    survivors=""
+    for k in ${kids}; do kill -0 "$k" 2>/dev/null && survivors="${survivors} ${k}"; done
+    [ -z "${survivors}" ] && echo "  -> no surviving child" || echo "  !! FAIL: surviving child(ren):${survivors}"

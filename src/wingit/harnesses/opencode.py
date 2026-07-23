@@ -9,7 +9,7 @@ events carrying real text, and an `error` event is the in-band failure signal.
 
 from typing import TYPE_CHECKING, Any, ClassVar
 
-from wingit.harnesses.claude import parse_json_object
+from wingit.harnesses.base import FAILURE_GIST_LIMIT, parse_json_object
 from wingit.schemas import (
     Capability,
     Event,
@@ -77,7 +77,7 @@ class OpencodeDriver:
             case "error":
                 self.failed = True
                 message = event.get("error", {}).get("data", {}).get("message", "")
-                yield Failed(gist=str(message))
+                yield Failed(gist=str(message)[:FAILURE_GIST_LIMIT])
 
     def finish(self, harness_exit: int) -> Iterator[Event]:  # noqa: ARG002 - Protocol signature; the answer is reassembled from buffered steps
         """Emit the last step's joined text as the answer, unless the run failed."""

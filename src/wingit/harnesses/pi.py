@@ -9,7 +9,7 @@ driver raises no synthetic `Failed`; the core uses the exit code and stderr.
 
 from typing import TYPE_CHECKING, Any, ClassVar
 
-from wingit.harnesses.claude import parse_json_object
+from wingit.harnesses.base import parse_json_object
 from wingit.schemas import (
     AnswerChunk,
     Capability,
@@ -70,13 +70,13 @@ class PiDriver:
                 if text:
                     self.final = text
 
-    def feed_delta(self, sub: dict[str, Any]) -> Iterator[Event]:
+    def feed_delta(self, message_event: dict[str, Any]) -> Iterator[Event]:
         """Turn one assistant-message delta into an answer or reasoning chunk."""
-        match sub.get("type"):
+        match message_event.get("type"):
             case "text_delta":
-                yield AnswerChunk(text=str(sub.get("delta", "")))
+                yield AnswerChunk(text=str(message_event.get("delta", "")))
             case "thinking_delta":
-                yield ReasoningChunk(text=str(sub.get("delta", "")))
+                yield ReasoningChunk(text=str(message_event.get("delta", "")))
 
     def join_text(self, message: dict[str, Any]) -> str:
         """Join the text blocks of a turn's message into one string."""

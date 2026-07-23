@@ -10,7 +10,7 @@ raises no synthetic `Failed`; the core falls back to the exit code and stderr.
 
 from typing import TYPE_CHECKING, Any, ClassVar
 
-from wingit.harnesses.claude import parse_json_object
+from wingit.harnesses.base import parse_json_object
 from wingit.schemas import (
     AnswerChunk,
     Capability,

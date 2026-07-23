@@ -10,7 +10,7 @@ import pytest
 from wingit.harnesses import DRIVERS
 from wingit.schemas import Capability, Harness
 
-# The settled capability grid (T2 design): one row per harness, verified live.
+# The settled capability grid: one row per harness, verified live.
 EXPECTED_CAPABILITIES = {
     Harness.CLAUDE: {
         Capability.STREAMS: False,

@@ -8,26 +8,15 @@ the in-band signal is `is_error`, with the process exit code authoritative in
 the core.
 """
 
-import json
-from typing import TYPE_CHECKING, Any, ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
+from wingit.harnesses.base import FAILURE_GIST_LIMIT, parse_json_object
 from wingit.schemas import Capability, Event, Failed, FinalAnswer, Run
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
 __all__ = ["ClaudeDriver"]
-
-FAILURE_GIST_LIMIT = 200
-
-
-def parse_json_object(line: str) -> dict[str, Any] | None:
-    """Parse one JSONL line to a dict, or None if it is not a JSON object."""
-    try:
-        obj = json.loads(line)
-    except json.JSONDecodeError:
-        return None
-    return obj if isinstance(obj, dict) else None
 
 
 class ClaudeDriver:

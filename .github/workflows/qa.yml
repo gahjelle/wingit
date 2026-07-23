@@ -13,6 +13,7 @@ concurrency:
 
 jobs:
   check:
+    name: Lint, type-check & test
     runs-on: ubuntu-latest
     permissions:
       contents: read

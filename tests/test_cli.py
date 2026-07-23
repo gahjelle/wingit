@@ -5,8 +5,8 @@ from importlib import metadata
 import pytest
 from conftest import RecordedRunner
 
-import wingit
 from wingit import core
+from wingit.__main__ import main
 from wingit.harnesses.claude import ClaudeDriver
 from wingit.schemas import ExitCode, Run
 
@@ -14,7 +14,7 @@ from wingit.schemas import ExitCode, Run
 def test_missing_prompt_is_usage_error() -> None:
     """Test that invoking with no prompt exits with the usage code, not a failure."""
     with pytest.raises(SystemExit) as excinfo:
-        wingit.main([])
+        main([])
 
     assert excinfo.value.code == ExitCode.USAGE
 
@@ -24,7 +24,7 @@ def test_both_console_scripts_point_at_main() -> None:
     scripts = metadata.entry_points(group="console_scripts")
     resolved = {ep.name: ep.load() for ep in scripts if ep.name in {"a", "wingit"}}
 
-    assert resolved == {"a": wingit.main, "wingit": wingit.main}
+    assert resolved == {"a": main, "wingit": main}
 
 
 def test_harness_not_found_reaches_stderr_via_dispatch(

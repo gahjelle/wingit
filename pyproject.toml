@@ -17,8 +17,8 @@ dependencies = [
 ]
 
 [project.scripts]
-a = "wingit:main"
-wingit = "wingit:main"
+a = "wingit.__main__:main"
+wingit = "wingit.__main__:main"
 
 [dependency-groups]
 dev = [

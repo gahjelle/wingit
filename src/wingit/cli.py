@@ -2,7 +2,7 @@
 
 No domain logic lives here (code-conventions.md): the command builds a `Run`
 and hands it to `core.dispatch`. cyclopts owns `--help`; usage errors become
-the usage exit code via the remap in `wingit.main`.
+the usage exit code via the remap in `wingit.__main__.main`.
 """
 
 from cyclopts import App

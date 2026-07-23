@@ -70,16 +70,6 @@ live-check:
     [ "$(tail -c1 "$tmp" | od -An -tx1 | tr -d ' ')" = "0a" ] && echo "  -> one trailing newline" || echo "  !! FAIL: no trailing newline"
     grep -q $'\x1b' "$tmp" && echo "  !! FAIL: ANSI/Rich markup present" || echo "  -> no markup"
     rm -f "$tmp"
-    echo "=== scripted SIGINT (expect exit 130, no surviving child) ==="
-    "$a" "count slowly from 1 to 60, one number per line, pausing to think between each" &
-    pid=$!
-    sleep 2
-    # Capture the live harness child(ren) before the reap reparents them to init,
-    # so the survival probe is meaningful rather than vacuously empty.
-    kids=$(pgrep -P "$pid")
-    kill -INT "$pid"
-    wait "$pid"; code=$?
-    echo "  -> exit ${code} (expect 130)"
-    survivors=""
-    for k in ${kids}; do kill -0 "$k" 2>/dev/null && survivors="${survivors} ${k}"; done
-    [ -z "${survivors}" ] && echo "  -> no surviving child" || echo "  !! FAIL: surviving child(ren):${survivors}"
+    echo "=== terminal Ctrl-C (expect exit 130, no surviving child) ==="
+    # A faithful pty Ctrl-C, not a racy single-pid kill — see the helper's docstring.
+    uv run python tests/live/interrupt_check.py

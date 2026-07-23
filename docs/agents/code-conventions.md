@@ -11,7 +11,7 @@
 wingit follows a thin-CLI split (mirroring the structure that worked well upstream):
 
 - `cli/` — thin layer: argument parsing and dispatch only, no domain logic.
-- `harnesses/` — one driver per harness. `harnesses/base.py` defines the `HarnessDriver` Protocol; real drivers (e.g. `harnesses/claude.py`) build the argv and run the subprocess; `harnesses/fake.py` is the injected test seam (see [testing.md](./testing.md) and [ADR-0003](../adr/0003-fake-harness-driver-test-seam.md)).
+- `harnesses/` — one driver per harness. `harnesses/base.py` defines the `HarnessDriver` and `ProcessRunner` Protocols; real drivers (e.g. `harnesses/claude.py`) build the argv and normalize output; `runner.py` holds the real `ProcessRunner`. The injected test seam is a fake `ProcessRunner` (not a fake driver) in `tests/`, running the real driver on recorded bytes (see [testing.md](./testing.md) and [ADR-0014](../adr/0014-fake-the-io-boundary-not-the-driver.md), superseding [ADR-0003](../adr/0003-fake-harness-driver-test-seam.md)).
 - `schemas/` — typed domain models on the project's `FrozenModel`/`StrictModel` bases (see GAC002).
 - `console.py` — the output contract: the **Answer** goes to stdout, **Reasoning** to stderr (see `CONTEXT.md`).
 - `sessions.py` — the session registry mapping session name → harness-native UUID.

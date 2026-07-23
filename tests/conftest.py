@@ -40,3 +40,9 @@ def load_fixture_lines(harness: str, *, scenario: str) -> list[str]:
     """Read a recorded harness stdout fixture and split it into lines."""
     path = FIXTURE_ROOT / harness / f"{scenario}.stdout"
     return path.read_text(encoding="utf-8").splitlines()
+
+
+def load_fixture_stderr(harness: str, *, scenario: str) -> str:
+    """Read a recorded harness stderr fixture, or "" if none was recorded."""
+    path = FIXTURE_ROOT / harness / f"{scenario}.stderr"
+    return path.read_text(encoding="utf-8") if path.exists() else ""

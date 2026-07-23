@@ -33,10 +33,19 @@ class RunResult:
 
 
 class HarnessDriver(Protocol):
-    """Adapts one harness CLI to wingit's normalized `Event` seam."""
+    """Adapts one harness CLI to wingit's normalized `Event` seam.
+
+    Lifecycle: one instance per run. `feed`/`finish` may accumulate state
+    across lines (several drivers buffer text and pick the answer at `finish`),
+    so the core constructs a fresh driver for every dispatch.
+
+    `capabilities` maps **every** `Capability` to an explicit bool \N{EN DASH}
+    never a subset \N{EN DASH} so adding a new axis forces a conscious yes/no in
+    each driver (enforced by a totality test).
+    """
 
     name: str
-    capabilities: frozenset[Capability]
+    capabilities: dict[Capability, bool]
 
     def argv(self, run: Run) -> list[str]:
         """Build the headless invocation for this run."""

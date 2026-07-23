@@ -48,3 +48,29 @@ fix:
     uv run ruff check --fix -q
     uv run garuff check --fix
     uv run ruff format -q
+
+# Requires all five harnesses installed and logged in. Proves the spawn contract
+# (stdin=DEVNULL, cwd-on-child, tools-at-write), the pipe contract, and Ctrl-C.
+# Manual liveness check against the real five harnesses — never in `check`, never CI.
+live-check:
+    #!/usr/bin/env bash
+    set -uo pipefail
+    a=".venv/bin/a"
+    uv sync --quiet
+    ask="how many markdown files are in the current directory? Answer with just the number."
+    for flag in -cl -cp -cx -oc -pi; do
+        echo "=== a ${flag} (ask-cwd) ==="
+        "$a" "$flag" "$ask"
+        echo "  -> exit $?"
+    done
+    echo "=== pipe smoke (Answer verbatim, one newline, no markup) ==="
+    out=$("$a" "reply with exactly one word: pineapple" | cat)
+    printf 'stdout: %q\n' "$out"
+    echo "=== scripted SIGINT (expect exit 130, no surviving child) ==="
+    "$a" "count slowly from 1 to 60, one number per line, pausing to think between each" &
+    pid=$!
+    sleep 2
+    kill -INT "$pid"
+    wait "$pid"; code=$?
+    echo "  -> exit ${code} (expect 130)"
+    if pgrep -P "$pid" >/dev/null; then echo "  !! FAIL: surviving child"; else echo "  -> no surviving child"; fi

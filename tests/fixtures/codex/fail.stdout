@@ -1,0 +1,5 @@
+{"type":"thread.started","thread_id":"019f761f-5bea-79c1-ad5c-d6775d135839"}
+{"type":"item.completed","item":{"id":"item_0","type":"error","message":"Model metadata for `no-such-model-xyz` not found. Defaulting to fallback metadata; this can degrade performance and cause issues."}}
+{"type":"turn.started"}
+{"type":"error","message":"{\n  \"type\": \"error\",\n  \"error\": {\n    \"type\": \"invalid_request_error\",\n    \"code\": \"model_not_found\",\n    \"message\": \"The requested model 'no-such-model-xyz' does not exist.\",\n    \"param\": \"model\"\n  },\n  \"status\": 400\n}"}
+{"type":"turn.failed","error":{"message":"{\n  \"type\": \"error\",\n  \"error\": {\n    \"type\": \"invalid_request_error\",\n    \"code\": \"model_not_found\",\n    \"message\": \"The requested model 'no-such-model-xyz' does not exist.\",\n    \"param\": \"model\"\n  },\n  \"status\": 400\n}"}}

@@ -15,12 +15,12 @@ def feed_all(driver: ClaudeDriver, *, lines: list[str]) -> list[object]:
 
 
 def test_argv_is_full_approval_headless_invocation() -> None:
-    """Test that argv builds `claude -p` in bypass-permissions stream-json mode."""
+    """Test that argv builds `claude --print` in bypass-permissions stream-json mode."""
     argv = ClaudeDriver().argv(Run(prompt="hi"))
 
     assert argv == [
         "claude",
-        "-p",
+        "--print",
         "hi",
         "--output-format",
         "stream-json",
@@ -31,10 +31,13 @@ def test_argv_is_full_approval_headless_invocation() -> None:
 
 
 def test_declares_claudes_capabilities() -> None:
-    """Test that the driver declares shows-reasoning and supports-tools-none."""
-    assert ClaudeDriver().capabilities == frozenset(
-        {Capability.SHOWS_REASONING, Capability.SUPPORTS_TOOLS_NONE}
-    )
+    """Test that Claude shows reasoning, supports `--tools none`, stores no session."""
+    assert ClaudeDriver().capabilities == {
+        Capability.STREAMS: False,
+        Capability.SHOWS_REASONING: True,
+        Capability.SUPPORTS_TOOLS_NONE: True,
+        Capability.RUNS_WITHOUT_STORING_SESSION: True,
+    }
 
 
 def test_prose_yields_final_answer_only() -> None:

@@ -9,7 +9,7 @@ the core.
 """
 
 import json
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from wingit.schemas import Capability, Event, Failed, FinalAnswer, Run
 
@@ -34,17 +34,21 @@ class ClaudeDriver:
     """Normalizes Claude Code's stream-json output into `Event`s."""
 
     name = "claude"
-    # Claude streams no trustworthy answer, shows reasoning, and supports
-    # `--tools none`, but stores every session, so it cannot run without one.
-    capabilities = frozenset(
-        {Capability.SHOWS_REASONING, Capability.SUPPORTS_TOOLS_NONE}
-    )
+    # Claude streams no trustworthy answer (ADR-0005 §2), shows reasoning, and
+    # supports `--tools none`. A `--print` run leaves no resumable session
+    # behind, so it runs without storing one.
+    capabilities: ClassVar[dict[Capability, bool]] = {
+        Capability.STREAMS: False,
+        Capability.SHOWS_REASONING: True,
+        Capability.SUPPORTS_TOOLS_NONE: True,
+        Capability.RUNS_WITHOUT_STORING_SESSION: True,
+    }
 
     def argv(self, run: Run) -> list[str]:
-        """Build `claude -p` in full-approval headless mode."""
+        """Build `claude --print` in full-approval headless mode."""
         return [
             "claude",
-            "-p",
+            "--print",
             run.prompt,
             "--output-format",
             "stream-json",

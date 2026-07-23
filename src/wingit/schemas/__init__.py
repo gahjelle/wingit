@@ -19,6 +19,7 @@ __all__ = [
     "Failed",
     "FinalAnswer",
     "FrozenModel",
+    "Harness",
     "ReasoningChunk",
     "Run",
     "StrictModel",
@@ -43,12 +44,29 @@ class ExitCode(IntEnum):
 
     `OK` is a clean answer, `FAILURE` is any harness or environmental failure,
     and `USAGE` is a malformed invocation — distinct so callers can tell a bad
-    command line from a run that reached the harness and failed.
+    command line from a run that reached the harness and failed. `INTERRUPTED`
+    is the code a shell reports for a SIGINT-killed process (ADR-0015).
     """
 
     OK = 0
     FAILURE = 1
     USAGE = 2
+    INTERRUPTED = 130
+
+
+class Harness(StrEnum):
+    """A supported harness, by its canonical lowercase name.
+
+    Members are ordered by `CONTEXT.md`'s ranked detection order (Claude Code >
+    Pi > Opencode > Copilot > Codex): the highest-ranked harness on `PATH` wins
+    when no harness is selected explicitly.
+    """
+
+    CLAUDE = "claude"
+    PI = "pi"
+    OPENCODE = "opencode"
+    COPILOT = "copilot"
+    CODEX = "codex"
 
 
 class Capability(StrEnum):

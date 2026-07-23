@@ -3,8 +3,12 @@ default: check
 # Run all quality gates in order, stopping on the first failure.
 check: fmt-check lint conventions typecheck test audit-workflows
 
-# Audit the GitHub Actions workflows for security issues with zizmor.
+# Audit the GitHub Actions workflows for security issues with zizmor (offline).
 audit-workflows:
+    uv run zizmor .github/workflows -q --offline
+
+# Audit workflows online: adds network-backed rules (e.g. known-vulnerable-actions).
+audit-workflows-ci:
     uv run zizmor .github/workflows -q
 
 # Pin every workflow `uses:` to a commit SHA with gha-update.

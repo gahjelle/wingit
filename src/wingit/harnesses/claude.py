@@ -8,9 +8,9 @@ the in-band signal is `is_error`, with the process exit code authoritative in
 the core.
 """
 
-import json
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, ClassVar
 
+from wingit.harnesses.base import FAILURE_GIST_LIMIT, parse_json_object
 from wingit.schemas import Capability, Event, Failed, FinalAnswer, Run
 
 if TYPE_CHECKING:
@@ -18,33 +18,23 @@ if TYPE_CHECKING:
 
 __all__ = ["ClaudeDriver"]
 
-FAILURE_GIST_LIMIT = 200
-
-
-def parse_json_object(line: str) -> dict[str, Any] | None:
-    """Parse one JSONL line to a dict, or None if it is not a JSON object."""
-    try:
-        obj = json.loads(line)
-    except json.JSONDecodeError:
-        return None
-    return obj if isinstance(obj, dict) else None
-
 
 class ClaudeDriver:
     """Normalizes Claude Code's stream-json output into `Event`s."""
 
     name = "claude"
-    # Claude streams no trustworthy answer, shows reasoning, and supports
-    # `--tools none`, but stores every session, so it cannot run without one.
-    capabilities = frozenset(
-        {Capability.SHOWS_REASONING, Capability.SUPPORTS_TOOLS_NONE}
-    )
+    capabilities: ClassVar = {
+        Capability.STREAMS: False,
+        Capability.SHOWS_REASONING: True,
+        Capability.SUPPORTS_TOOLS_NONE: True,
+        Capability.RUNS_WITHOUT_STORING_SESSION: True,
+    }
 
     def argv(self, run: Run) -> list[str]:
-        """Build `claude -p` in full-approval headless mode."""
+        """Build `claude --print` in full-approval headless mode."""
         return [
             "claude",
-            "-p",
+            "--print",
             run.prompt,
             "--output-format",
             "stream-json",

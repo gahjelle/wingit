@@ -19,6 +19,22 @@ def test_missing_prompt_is_usage_error() -> None:
     assert excinfo.value.code == ExitCode.USAGE
 
 
+def test_conflicting_harness_flags_is_usage_error() -> None:
+    """Test that selecting two harnesses at once exits usage, before any dispatch."""
+    with pytest.raises(SystemExit) as excinfo:
+        main(["-cl", "-cp", "hi"])
+
+    assert excinfo.value.code == ExitCode.USAGE
+
+
+def test_unknown_harness_value_is_usage_error() -> None:
+    """Test that an unknown `--harness` value is a cyclopts usage error."""
+    with pytest.raises(SystemExit) as excinfo:
+        main(["--harness", "no-such-harness", "hi"])
+
+    assert excinfo.value.code == ExitCode.USAGE
+
+
 def test_both_console_scripts_point_at_main() -> None:
     """Test that the `wingit` and `a` entry points both resolve to `main`."""
     scripts = metadata.entry_points(group="console_scripts")

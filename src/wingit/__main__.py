@@ -21,11 +21,15 @@ def main(argv: Sequence[str] | None = None) -> None:
     token list directly. cyclopts only ever exits 1 on a parse error, so this
     catches it, lets cyclopts print the detail, and remaps to the usage code —
     the one place the 0/1/2 contract needs a distinct exit for a bad invocation.
+    A Ctrl-C surfaces as `KeyboardInterrupt`; catching it gives the clean exit
+    `130` a shell reports for SIGINT, with no traceback (ADR-0015).
     """
     try:
         code = app(argv, exit_on_error=False)
     except CycloptsError:
         sys.exit(ExitCode.USAGE)
+    except KeyboardInterrupt:
+        sys.exit(ExitCode.INTERRUPTED)
     sys.exit(code)
 
 

@@ -96,6 +96,7 @@ lives under `[tool.garuff]` in `pyproject.toml`. Each rule and how to satisfy it
 - Prefer `pathlib` over `os.path` for filesystem operations.
 - Thin `cli/` layer — application logic lives in domain modules, not in CLI handlers.
 - Harness drivers live in `harnesses/` and follow the `HarnessDriver` Protocol in `harnesses/base.py`.
+- **Prefer long-form flags in every harness argv** the driver emits (`--print` not `-p`, `--approve` not `-a`): long flags are self-documenting in a recorded argv and unambiguous across harnesses. This is about the argv wingit *emits* to the harness, not about `a`'s own CLI, where short flags like `-cp` are deliberate (issue #23).
 - Avoid underscore-prefixed names for "private" symbols — the visual noise outweighs the benefit. Control the public API with `__all__` when a module needs to distinguish exported names from internal helpers.
 
 ## Comments

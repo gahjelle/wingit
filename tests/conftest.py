@@ -11,10 +11,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from wingit import core
 from wingit.harnesses.base import RunResult
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Callable, Sequence
+
+    from wingit.harnesses.base import HarnessDriver
+    from wingit.schemas import Event
 
 FIXTURE_ROOT = Path(__file__).parent / "fixtures"
 
@@ -40,3 +44,29 @@ def load_fixture_lines(harness: str, *, scenario: str) -> list[str]:
     """Read a recorded harness stdout fixture and split it into lines."""
     path = FIXTURE_ROOT / harness / f"{scenario}.stdout"
     return path.read_text(encoding="utf-8").splitlines()
+
+
+def load_fixture_stderr(harness: str, *, scenario: str) -> str:
+    """Read a recorded harness stderr fixture, or "" if none was recorded."""
+    path = FIXTURE_ROOT / harness / f"{scenario}.stderr"
+    return path.read_text(encoding="utf-8") if path.exists() else ""
+
+
+def make_collector(
+    driver_cls: type[HarnessDriver], *, harness: str
+) -> Callable[..., list[Event]]:
+    """Build a `collect(scenario, *, exit_code=0)` bound to one driver and its fixtures.
+
+    Each driver test runs the real driver and core over recorded bytes; only the
+    driver class and fixture directory differ, so the loop lives here once.
+    """
+
+    def collect(scenario: str, *, exit_code: int = 0) -> list[Event]:
+        """Run the real driver over a recorded fixture and collect its events."""
+        return core.collect_events(
+            driver_cls(),
+            lines=load_fixture_lines(harness, scenario=scenario),
+            exit_code=exit_code,
+        )
+
+    return collect

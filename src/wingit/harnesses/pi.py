@@ -30,9 +30,7 @@ class PiDriver:
     """Normalizes Pi's JSON stream into `Event`s."""
 
     name = "pi"
-    # Pi streams real token deltas, shows thinking, and supports a tools-off
-    # rung; a `--print` run leaves no resumable session behind.
-    capabilities: ClassVar[dict[Capability, bool]] = {
+    capabilities: ClassVar = {
         Capability.STREAMS: True,
         Capability.SHOWS_REASONING: True,
         Capability.SUPPORTS_TOOLS_NONE: True,

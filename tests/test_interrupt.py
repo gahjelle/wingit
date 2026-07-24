@@ -1,8 +1,10 @@
 """The Ctrl-C contract: an interrupt is a hard stop to exit 130, no partial flush.
 
-This asserts the deterministic half of ADR-0015: a `KeyboardInterrupt` from the
-spawn boundary makes `main()` exit `130` with empty stdout. The real
-signal → child-death → no-orphan path is proven by `just live-check`, not here.
+This owns one slice of ADR-0015: a `KeyboardInterrupt` surfacing from the spawn
+boundary makes `main()` exit `130` with empty stdout. Two companions cover the
+rest — `test_runner.py` pins the spawn kwargs that keep the child in wingit's
+process group (so a real Ctrl-C reaches it), and `just live-check` proves the
+real signal → child-death → no-orphan path against live harnesses.
 """
 
 from pathlib import Path

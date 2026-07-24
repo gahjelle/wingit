@@ -1,14 +1,9 @@
 """Unit tests for the Pi driver: argv, last-turn answer, thinking, silent failure."""
 
-from typing import TYPE_CHECKING
+from conftest import make_collector
 
-from conftest import RecordedRunner, load_fixture_lines, load_fixture_stderr
-
-from wingit import core
 from wingit.harnesses.pi import PiDriver
 from wingit.schemas import (
-    Event,
-    ExitCode,
     Failed,
     FinalAnswer,
     ReasoningChunk,
@@ -16,17 +11,7 @@ from wingit.schemas import (
     ToolActivity,
 )
 
-if TYPE_CHECKING:
-    import pytest
-
-
-def collect(scenario: str, *, exit_code: int = 0) -> list[Event]:
-    """Run the real driver over a recorded pi fixture and collect events."""
-    return core.collect_events(
-        PiDriver(),
-        lines=load_fixture_lines("pi", scenario=scenario),
-        exit_code=exit_code,
-    )
+collect = make_collector(PiDriver, harness="pi")
 
 
 def test_argv_is_approve_json_invocation() -> None:
@@ -62,21 +47,3 @@ def test_failure_emits_nothing_in_band() -> None:
     events = collect("fail", exit_code=1)
 
     assert not any(isinstance(event, (FinalAnswer, Failed)) for event in events)
-
-
-def test_failure_surfaces_stderr_through_the_core(
-    capsys: pytest.CaptureFixture[str],
-) -> None:
-    """Test that exit code plus stderr drive the failure the driver stays silent on."""
-    runner = RecordedRunner(
-        stdout_lines=load_fixture_lines("pi", scenario="fail"),
-        stderr=load_fixture_stderr("pi", scenario="fail"),
-        exit_code=1,
-    )
-
-    code = core.dispatch(Run(prompt="hi"), driver=PiDriver(), runner=runner)
-    captured = capsys.readouterr()
-
-    assert code == ExitCode.FAILURE
-    assert captured.out == ""
-    assert "no-such-model-xyz" in captured.err

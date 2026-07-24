@@ -30,10 +30,7 @@ class CopilotDriver:
     """Normalizes Copilot's JSON stream into `Event`s."""
 
     name = "copilot"
-    # Copilot streams real token deltas, but its reasoning is an opaque blob
-    # (no shown reasoning) and it can drop all tools; every run persists a
-    # resumable session.
-    capabilities: ClassVar[dict[Capability, bool]] = {
+    capabilities: ClassVar = {
         Capability.STREAMS: True,
         Capability.SHOWS_REASONING: False,
         Capability.SUPPORTS_TOOLS_NONE: True,

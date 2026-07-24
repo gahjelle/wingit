@@ -1,19 +1,11 @@
 """Unit tests for the Opencode driver: argv, buffered answer, reasoning, failure."""
 
-from conftest import load_fixture_lines
+from conftest import make_collector
 
-from wingit import core
 from wingit.harnesses.opencode import OpencodeDriver
-from wingit.schemas import Event, Failed, FinalAnswer, ReasoningChunk, Run, ToolActivity
+from wingit.schemas import Failed, FinalAnswer, ReasoningChunk, Run, ToolActivity
 
-
-def collect(scenario: str, *, exit_code: int = 0) -> list[Event]:
-    """Run the real driver over a recorded opencode fixture and collect events."""
-    return core.collect_events(
-        OpencodeDriver(),
-        lines=load_fixture_lines("opencode", scenario=scenario),
-        exit_code=exit_code,
-    )
+collect = make_collector(OpencodeDriver, harness="opencode")
 
 
 def test_argv_is_auto_thinking_json_invocation() -> None:

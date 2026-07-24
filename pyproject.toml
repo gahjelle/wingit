@@ -46,8 +46,9 @@ ignore = ["COM812", "D203", "D213", "PLR0913"]
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "PLR2004", "SLF001", "INP001"]
 # The manual live-check helper is a CLI script that deliberately prints its
-# result and spawns a real harness under a pty — never run in `just check`.
-"tests/live/interrupt_check.py" = ["T201", "S603", "S606", "S607"]
+# result (T201) and spawns real processes without a shell (S603, S606) under a
+# pty — never run in `just check`. Executable paths are resolved, so no S607.
+"tests/live/interrupt_check.py" = ["T201", "S603", "S606"]
 
 [tool.ruff.lint.flake8-type-checking]
 # Pydantic resolves annotations at runtime (model schema building), so imports

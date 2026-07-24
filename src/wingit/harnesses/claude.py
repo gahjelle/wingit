@@ -23,10 +23,7 @@ class ClaudeDriver:
     """Normalizes Claude Code's stream-json output into `Event`s."""
 
     name = "claude"
-    # Claude streams no trustworthy answer (ADR-0005 §2), shows reasoning, and
-    # supports `--tools none`. A `--print` run leaves no resumable session
-    # behind, so it runs without storing one.
-    capabilities: ClassVar[dict[Capability, bool]] = {
+    capabilities: ClassVar = {
         Capability.STREAMS: False,
         Capability.SHOWS_REASONING: True,
         Capability.SUPPORTS_TOOLS_NONE: True,

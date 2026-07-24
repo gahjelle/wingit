@@ -1,11 +1,9 @@
 """Unit tests for the Codex driver: argv, completed-item answer, tools, failure."""
 
-from conftest import load_fixture_lines
+from conftest import make_collector
 
-from wingit import core
 from wingit.harnesses.codex import CodexDriver
 from wingit.schemas import (
-    Event,
     Failed,
     FinalAnswer,
     ReasoningChunk,
@@ -13,14 +11,7 @@ from wingit.schemas import (
     ToolActivity,
 )
 
-
-def collect(scenario: str, *, exit_code: int = 0) -> list[Event]:
-    """Run the real driver over a recorded codex fixture and collect events."""
-    return core.collect_events(
-        CodexDriver(),
-        lines=load_fixture_lines("codex", scenario=scenario),
-        exit_code=exit_code,
-    )
+collect = make_collector(CodexDriver, harness="codex")
 
 
 def test_argv_is_workspace_write_json_invocation() -> None:

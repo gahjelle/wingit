@@ -55,17 +55,17 @@ fix:
 live-check:
     #!/usr/bin/env bash
     set -uo pipefail
-    a=".venv/bin/a"
+    # `uv sync` also populates `.venv/bin/a`, which the pty helper execs directly.
     uv sync --quiet
     ask="how many markdown files are in the current directory? Answer with just the number."
     for flag in -cl -cp -cx -oc -pi; do
         echo "=== a ${flag} (ask-cwd) ==="
-        "$a" "$flag" "$ask"
+        uv run a "$flag" "$ask"
         echo "  -> exit $?"
     done
     echo "=== pipe smoke (Answer verbatim, one trailing newline, no markup) ==="
     tmp=$(mktemp)
-    "$a" "reply with exactly one word: pineapple" > "$tmp"
+    uv run a "reply with exactly one word: pineapple" > "$tmp"
     printf 'stdout: %q  (bytes: %s)\n' "$(cat "$tmp")" "$(wc -c < "$tmp" | tr -d ' ')"
     [ "$(tail -c1 "$tmp" | od -An -tx1 | tr -d ' ')" = "0a" ] && echo "  -> one trailing newline" || echo "  !! FAIL: no trailing newline"
     grep -q $'\x1b' "$tmp" && echo "  !! FAIL: ANSI/Rich markup present" || echo "  -> no markup"

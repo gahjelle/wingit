@@ -30,10 +30,7 @@ class OpencodeDriver:
     """Normalizes Opencode's JSON stream into `Event`s."""
 
     name = "opencode"
-    # Opencode has no trustworthy streamed answer (reassembled at EOF), shows
-    # reasoning under `--thinking`, and supports a tools-off permission map, but
-    # every run persists a resumable session.
-    capabilities: ClassVar[dict[Capability, bool]] = {
+    capabilities: ClassVar = {
         Capability.STREAMS: False,
         Capability.SHOWS_REASONING: True,
         Capability.SUPPORTS_TOOLS_NONE: True,

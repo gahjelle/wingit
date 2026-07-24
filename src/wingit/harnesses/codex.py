@@ -31,10 +31,7 @@ class CodexDriver:
     """Normalizes Codex's JSON stream into `Event`s."""
 
     name = "codex"
-    # Codex delivers the answer whole at the end (no streaming), shows
-    # reasoning, and has no tools-off rung (only sandbox modes), but `exec`
-    # leaves no resumable session behind.
-    capabilities: ClassVar[dict[Capability, bool]] = {
+    capabilities: ClassVar = {
         Capability.STREAMS: False,
         Capability.SHOWS_REASONING: True,
         Capability.SUPPORTS_TOOLS_NONE: False,

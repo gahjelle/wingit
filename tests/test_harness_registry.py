@@ -7,6 +7,7 @@ explicitly, and the declared values match the settled capability grid.
 
 import pytest
 
+from wingit.cli import SHORT_FLAGS
 from wingit.harnesses import DRIVERS
 from wingit.schemas import Capability, Harness
 
@@ -48,6 +49,15 @@ EXPECTED_CAPABILITIES = {
 def test_registry_covers_every_harness() -> None:
     """Test that the registry maps exactly the `Harness` enum members."""
     assert set(DRIVERS) == set(Harness)
+
+
+def test_every_harness_has_a_short_flag() -> None:
+    """Test that the short-flag map stays in sync with the `Harness` enum.
+
+    Adding a harness must add its `-xx` short; this fails if `SHORT_FLAGS` and
+    the enum drift apart (the one CLI sync a new harness still needs by hand).
+    """
+    assert set(SHORT_FLAGS.values()) == set(Harness)
 
 
 def test_harness_members_are_detection_ranked() -> None:

@@ -19,14 +19,22 @@ Run only via `just live-check`; it spawns a real, logged-in harness.
 import contextlib
 import os
 import pty
+import shutil
 import subprocess
 import sys
 import time
+from pathlib import Path
 
 PROMPT = (
     "Run this exact shell command and wait for it to finish, then reply done: sleep 30"
 )
-A_BINARY = ".venv/bin/a"
+# Exec `a` directly, not `uv run a`: `pty.fork` makes the exec'd process the pty
+# session leader, so `a` must *be* that process for the tty's Ctrl-C to hit its
+# foreground group and for the survivor check to inspect `a`'s own child (the
+# harness). Routing through `uv run` would insert uv as the leader. Absolute
+# paths keep the spawn independent of cwd/PATH (and clear ruff's S607).
+A_BINARY = str(Path(".venv/bin/a").resolve())
+PGREP = shutil.which("pgrep") or "pgrep"
 CTRL_C = b"\x03"
 BUSY_SECONDS = 6
 REAP_TIMEOUT = 20
@@ -36,7 +44,7 @@ INTERRUPTED = 130
 def child_pids(pid: int) -> list[str]:
     """Return the direct child pids of `pid`, captured while it is still alive."""
     result = subprocess.run(
-        ["pgrep", "-P", str(pid)],
+        [PGREP, "-P", str(pid)],
         capture_output=True,
         text=True,
         check=False,
